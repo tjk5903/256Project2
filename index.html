@@ -6,10 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="Description" content="Boilerplate for polaris chip">
   <base href="/">
-  <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-      rel="stylesheet"
-    />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
   <style>
     :root,
@@ -20,6 +17,7 @@
       font-family: Arial, Helvetica, sans-serif;
       background-color: #92967c;
     }
+
     polaris-chip {
       margin: 10px;
       display: inline;
@@ -28,7 +26,6 @@
     }
   </style>
   <title>polaris-chip / my-card</title>
-  <script src="https://unpkg.com/@lrnwebcomponents/multiple-choice"></script>
 </head>
 
 <body>
@@ -36,17 +33,12 @@
     { value: 'good form', correct: true, feedback: 'The shape of the vase clearly demonstrates craftsmanship' },
     { value: 'poor taste', correct: false, feedback: 'Taste is in the eye of the designer as well as the viewer.' },
     // Add more tag data as needed
-  ]}
-  </tagging-question>
-  <example-event></example-event>
+  ]}</tagging-question>
+
+  <script type="module" src="./src/polaris-chip.js"></script>
+  <script type="module" src="./src/my-card.js"></script>
+  <script type="module" src="./src/example-event.js"></script>
+  <script type="module" src="./src/tagging-question.js"></script>
 </body>
-
-<script type="module" src="./src/polaris-chip.js"></script>
-<script type="module" src="./src/my-card.js"></script>
-<script type="module" src="./src/example-event.js"></script>
-<script type="module" src="./src/tagging-question.js"></script>
-
-  
-</script>
 
 </html>

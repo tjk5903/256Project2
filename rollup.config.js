@@ -1,18 +1,95 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
+import html from '@web/rollup-plugin-html';
+import { importMetaAssets } from '@web/rollup-plugin-import-meta-assets';
+import { terser } from 'rollup-plugin-terser';
+import { generateSW } from 'rollup-plugin-workbox';
+import path from 'path';
+import copy from 'rollup-plugin-copy';
 
 export default {
-  input: 'index.html', // Change 'src/index.js' to the entry point of your application
+  input: 'index.html',
   output: {
-    file: 'dist/bundle.js', // Change 'dist/bundle.js' to the desired output bundle file
-    format: 'es', // Specify the output format (ES module in this case)
-    sourcemap: true, // Generate source maps for debugging
+    entryFileNames: '[hash].js',
+    chunkFileNames: '[hash].js',
+    assetFileNames: '[hash][extname]',
+    format: 'es',
+    dir: 'dist',
   },
+  preserveEntrySignatures: false,
+
   plugins: [
-    nodeResolve(), // Resolve node_modules dependencies
+    /** Enable using HTML as rollup entrypoint */
+    html({
+      minify: true,
+      injectServiceWorker: true,
+      serviceWorkerPath: 'dist/sw.js',
+    }),
+    copy({
+      targets: [
+        {
+          src: 'node_modules/@lrnwebcomponents/rpg-character/lib',
+          dest: 'dist',
+        },
+        {
+          src: 'node_modules/@lrnwebcomponents/simple-icon/lib/svgs',
+          dest: 'dist',
+        },
+      ],
+    }),
+    /** Resolve bare module imports */
+    nodeResolve(),
+    /** Minify JS */
+    terser(),
+    /** Bundle assets references via import.meta.url */
+    importMetaAssets(),
+    /** Compile JS to a lower language target */
     babel({
-      babelHelpers: 'bundled', // Specify babel helpers mode
-      presets: ['@babel/preset-env'], // Use @babel/preset-env for transpilation
+      babelHelpers: 'bundled',
+      presets: [
+        [
+          require.resolve('@babel/preset-env'),
+          {
+            targets: [
+              'last 3 Chrome major versions',
+              'last 3 Firefox major versions',
+              'last 3 Edge major versions',
+              'last 3 Safari major versions',
+            ],
+            modules: false,
+            bugfixes: true,
+          },
+        ],
+      ],
+      plugins: [
+        [
+          require.resolve('babel-plugin-template-html-minifier'),
+          {
+            modules: { lit: ['html', { name: 'css', encapsulation: 'style' }] },
+            failOnError: false,
+            strictCSS: true,
+            htmlMinifier: {
+              collapseWhitespace: true,
+              conservativeCollapse: true,
+              removeComments: true,
+              caseSensitive: true,
+              minifyCSS: true,
+            },
+          },
+        ],
+      ],
+    }),
+    /** Create and inject a service worker */
+    generateSW({
+      navigateFallback: '/index.html',
+      // where to output the generated sw
+      swDest: path.join('dist', 'sw.js'),
+      // directory to match patterns against to be precached
+      globDirectory: path.join('dist'),
+      // cache any html js and css by default
+      globPatterns: ['**/*.{html,js,css,webmanifest}'],
+      skipWaiting: true,
+      clientsClaim: true,
     }),
   ],
 };
