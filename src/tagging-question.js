@@ -58,23 +58,25 @@ export class TaggingQuestion extends LitElement {
 
   static properties = {
     tagData: { type: Array }, // Array of tag objects { value: string, correct: boolean, feedback: string }
+    droppedTag: { type: String }, // Currently dropped tag value
+    isAnswered: { type: Boolean }, // Flag to indicate if answer has been dropped
   };
 
   constructor() {
     super();
-    this.tagData = [];
+    this.tagData = [
+      { value: 'good form', correct: true, feedback: 'The shape of the vase clearly demonstrates craftsmanship' },
+      { value: 'poor taste', correct: false, feedback: 'Taste is in the eye of the designer as well as the viewer.' }
+    ];
+    this.droppedTag = '';
+    this.isAnswered = false;
   }
 
   render() {
     return html`
       <div class="tagging-question-container">
-        <div class="question">
-          <!-- Question text and optional image slot -->
-          <slot name="question-text"></slot>
-          <slot name="question-image"></slot>
-        </div>
         <div class="tags-container">
-          <!-- Available tags -->
+          <!-- Draggable tags -->
           ${this.tagData.map(
             (tag) => html`
               <div 
@@ -93,9 +95,10 @@ export class TaggingQuestion extends LitElement {
           @drop="${this.drop}"
         >
           <!-- Answer area where tags will be dropped -->
+          ${this.droppedTag ? html`${this.droppedTag}` : ''}
         </div>
-        <button class="check-answer-btn" disabled>Check Answer</button>
-        <button class="reset-btn">Reset</button>
+        <button class="check-answer-btn" ?disabled="${!this.isAnswered}" @click="${this.checkAnswer}">Check Answer</button>
+        <button class="reset-btn" @click="${this.reset}">Reset</button>
       </div>
     `;
   }
@@ -113,6 +116,18 @@ export class TaggingQuestion extends LitElement {
     const tagValue = e.dataTransfer.getData('text/plain');
     // Handle dropped tag here
     console.log('Dropped tag:', tagValue);
+    this.droppedTag = tagValue;
+    this.isAnswered = true;
+  }
+
+  checkAnswer() {
+    // Implement logic to check the answer
+    console.log('Checking answer...');
+  }
+
+  reset() {
+    this.droppedTag = '';
+    this.isAnswered = false;
   }
 }
 
