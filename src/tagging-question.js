@@ -17,7 +17,7 @@ export class TaggingQuestion extends LitElement {
     }
 
     .tag {
-      background-color: #d4d4d4; /* Tag color */
+      background-color: #d4d4d4; 
       padding: 8px 12px;
       border-radius: 20px;
       margin-right: 10px;
@@ -26,16 +26,16 @@ export class TaggingQuestion extends LitElement {
     }
 
     .tag.correct {
-      background-color: #6bd425; /* Green color for correct tags */
+      background-color: #6bd425; 
     }
 
     .tag.incorrect {
-      background-color: #ff6961; /* Red color for incorrect tags */
+      background-color: #ff6961; 
     }
 
     .answer-area {
       min-height: 100px;
-      border: 2px dashed #ccc; /* Dashed border to indicate drop area */
+      border: 2px dashed #ccc;
       margin-top: 20px;
     }
 
@@ -43,7 +43,7 @@ export class TaggingQuestion extends LitElement {
     .reset-btn {
       margin-top: 20px;
       padding: 10px 20px;
-      background-color: #007bff; /* Blue color for buttons */
+      background-color: #007bff; 
       color: #fff;
       border: none;
       border-radius: 5px;
@@ -51,13 +51,13 @@ export class TaggingQuestion extends LitElement {
     }
 
     .check-answer-btn:disabled {
-      background-color: #ccc; /* Disabled button color */
+      background-color: #ccc; 
       cursor: not-allowed;
     }
   `;
 
   static properties = {
-    tagData: { type: Array }, // Array of tag objects { value: string, correct: boolean, feedback: string }
+    tagData: { type: Array }, 
     droppedTag: { type: String }, // Currently dropped tag value
     isAnswered: { type: Boolean }, // Flag to indicate if answer has been dropped
   };
@@ -114,14 +114,12 @@ export class TaggingQuestion extends LitElement {
   drop(e) {
     e.preventDefault();
     const tagValue = e.dataTransfer.getData('text/plain');
-    // Handle dropped tag here
     console.log('Dropped tag:', tagValue);
     this.droppedTag = tagValue;
     this.isAnswered = true;
   }
 
   checkAnswer() {
-    // Implement logic to check the answer
     console.log('Checking answer...');
   }
 
