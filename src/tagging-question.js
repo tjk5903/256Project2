@@ -3,7 +3,7 @@ import { LitElement, html, css } from 'lit';
 export class TaggingQuestion extends LitElement {
   static styles = css`
     .tagging-question-container {
-      background-color: #f3e9e0; /* Seashell color */
+      background-color: #f3e9e0; 
       padding: 20px;
       border-radius: 15px;
       width: 80%;
@@ -12,12 +12,8 @@ export class TaggingQuestion extends LitElement {
 
     .tags-container {
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
       margin-top: 20px;
-    }
-
-    .available-tags {
-      display: flex;
     }
 
     .tag {
@@ -25,7 +21,16 @@ export class TaggingQuestion extends LitElement {
       padding: 8px 12px;
       border-radius: 20px;
       margin-right: 10px;
+      margin-bottom: 10px;
       cursor: pointer;
+    }
+
+    .tag.correct {
+      background-color: #6bd425; /* Green color for correct tags */
+    }
+
+    .tag.incorrect {
+      background-color: #ff6961; /* Red color for incorrect tags */
     }
 
     .answer-area {
@@ -51,6 +56,15 @@ export class TaggingQuestion extends LitElement {
     }
   `;
 
+  static properties = {
+    tagData: { type: Array }, // Array of tag objects { value: string, correct: boolean, feedback: string }
+  };
+
+  constructor() {
+    super();
+    this.tagData = [];
+  }
+
   render() {
     return html`
       <div class="tagging-question-container">
@@ -61,17 +75,44 @@ export class TaggingQuestion extends LitElement {
         </div>
         <div class="tags-container">
           <!-- Available tags -->
-          <div class="available-tags">
-            <!-- Tags will be dynamically generated here -->
-          </div>
+          ${this.tagData.map(
+            (tag) => html`
+              <div 
+                class="tag ${tag.correct ? 'correct' : 'incorrect'}" 
+                draggable="true" 
+                @dragstart="${(e) => this.dragStart(e, tag)}"
+              >
+                ${tag.value}
+              </div>
+            `
+          )}
         </div>
-        <div class="answer-area">
+        <div 
+          class="answer-area" 
+          @dragover="${this.allowDrop}" 
+          @drop="${this.drop}"
+        >
           <!-- Answer area where tags will be dropped -->
         </div>
         <button class="check-answer-btn" disabled>Check Answer</button>
         <button class="reset-btn">Reset</button>
       </div>
     `;
+  }
+
+  dragStart(e, tag) {
+    e.dataTransfer.setData('text/plain', tag.value);
+  }
+
+  allowDrop(e) {
+    e.preventDefault();
+  }
+
+  drop(e) {
+    e.preventDefault();
+    const tagValue = e.dataTransfer.getData('text/plain');
+    // Handle dropped tag here
+    console.log('Dropped tag:', tagValue);
   }
 }
 
