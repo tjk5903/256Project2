@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-export class Tag extends LitElement {
+export class TaggingQuestion extends LitElement {
   static styles = css`
     .tagging-question-container {
       background-color: #f3e9e0; 
@@ -75,4 +75,4 @@ export class Tag extends LitElement {
   }
 }
 
-customElements.define('tagging-question', Tag);
+customElements.define('tagging-question', TaggingQuestion);
